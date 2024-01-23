@@ -1,0 +1,31 @@
+# Compiled files
+*.o
+*.cmi
+*.cmo
+*.cmx
+*.cmt
+*.cmti
+*.cma
+*.cmxa
+*.byte
+*.native
+
+# Build directory
+_build/
+
+# Editor files
+*~
+
+# Dependency files
+.opam
+_opam/
+
+# Documentation files
+doc/
+
+# Compiled executables
+*.exe
+*.out
+
+# Data folder
+data/
