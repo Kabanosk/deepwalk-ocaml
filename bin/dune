@@ -1,4 +1,4 @@
 (executable
  (public_name deepwalk_ocaml)
  (name main)
- (libraries deepwalk_ocaml yojson))
+ (libraries deepwalk_ocaml yojson ocamlgraph))
