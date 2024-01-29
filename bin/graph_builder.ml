@@ -19,7 +19,7 @@ module GraphBuilder = struct
     | Song x, Song y -> String.equal x y
     | _ -> false
 
-  include Persistent.Digraph.ConcreteBidirectional(struct
+  include Persistent.Graph.Concrete(struct
     type t = node
     let compare = compare_node
     let hash = Hashtbl.hash
@@ -27,6 +27,9 @@ module GraphBuilder = struct
   end)
 
   let g = empty
+  let add_connection g v1 v2 = 
+    let g_ = add_edge g v1 v2 in
+    add_edge g_ v2 v1
 
   let build_graph filename = 
     let nodes = DE.get_nodes filename in  
@@ -40,9 +43,23 @@ module GraphBuilder = struct
       match nodes with
       | [] -> graph
       | (p_id, songs) :: rest ->
-          let g_ = List.fold_left (fun g s -> add_edge g (Playlist p_id) (Song s)) graph songs in
+          let g_ = List.fold_left (fun g s -> add_connection g (Playlist p_id) (Song s)) graph songs in
           build_edges g_ rest in
     
     build_edges g nodes
-  
+
+    let random_walk graph v d =
+      let rec walk_rec acc node depth =
+        if depth = 0 then
+          acc
+        else
+          let nb = succ graph node in
+          match nb with
+          | [] -> acc
+          | _ ->
+            let random_neighbor = List.nth nb (Random.int (List.length nb)) in
+            walk_rec (random_neighbor :: acc) random_neighbor (depth - 1)
+      in
+      walk_rec [v] v d
+    
 end

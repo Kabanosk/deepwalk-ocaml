@@ -17,12 +17,29 @@ let () =
       (List.length songs) 
       (List.length playlists)
 **)
+open Graph_builder
 
-open Yojson.Basic.Util
+let pr v = 
+  match v with
+  | GraphBuilder.Song s -> Printf.printf "-> %s\n" s
+  | GraphBuilder.Playlist p -> Printf.printf "-> %d\n" p
 
-let () = 
-  let songs = Spotify.DE.get_nodes "data/mpd.slice.0-999.json" in
-  List.iter (fun s ->
-    Printf.printf "pid: %d\n" (fst s); 
-    List.iter (fun x -> Printf.printf "\t%d: %s\n" (x |> member "pos" |> to_int) (x |> member "track_name" |> to_string)) (snd s)
-  ) songs
+(* let pr2 v1 v2 = 
+  match (v1, v2) with
+  | GraphBuilder.Playlist p, GraphBuilder.Song s -> Printf.printf "Edge: %d -> %s\n" p s
+  | GraphBuilder.Song s, GraphBuilder.Playlist p -> Printf.printf "h: %s -> %d\n" s p
+  | _ -> () *)
+
+(* let rw graph n d =
+  let w = GraphBuilder.random_walk graph (GraphBuilder.Playlist 0) 5 in
+  List.map (fun n ->
+    match n with
+    | GraphBuilder.Playlist p -> p
+    | GraphBuilder.Song s -> s
+    | _ -> failwith "Unexpected vertex type"
+  ) w *)
+
+let print_graph graph : unit =
+  List.iter (fun v -> pr v) (GraphBuilder.random_walk graph (GraphBuilder.Playlist 450) 20)
+
+let () = print_graph (GraphBuilder.build_graph "data/mpd.slice.0-999.json")
