@@ -50,7 +50,7 @@ module DE = struct
   let get_nodes filename = 
     let playlists = get_playlists filename in
     let json_nodes = List.fold_left
-                      (fun acc pl -> ((pl |> member "pid" |> to_int), pl |> member "tracks" |> to_list) :: acc)
+                      (fun acc pl -> (string_of_int (pl |> member "pid" |> to_int), pl |> member "tracks" |> to_list) :: acc)
                       []
                       playlists in
     List.map (fun node -> ((fst node), List.fold_left (fun acc song -> (song |> member "track_uri" |> to_string) :: acc) [] (snd node))) json_nodes
